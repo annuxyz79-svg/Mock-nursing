@@ -1,0 +1,803 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nursing X27 Biology Mock Test</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f1f5f9;
+    color:#172033;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    padding:15px;
+}
+
+.header,.card,.result{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    margin-bottom:15px;
+    box-shadow:0 3px 15px #0002;
+}
+
+h1{
+    margin:0 0 5px;
+}
+
+.timer{
+    margin-top:12px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.palette{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:15px;
+}
+
+.palette button{
+    width:40px;
+    height:40px;
+    padding:0;
+    border-radius:8px;
+    border:1px solid #ccc;
+    background:#eee;
+    color:#111;
+}
+
+.palette button.active{
+    background:#315efb;
+    color:white;
+}
+
+.palette button.done{
+    background:#45b96b;
+    color:white;
+}
+
+.question{
+    font-size:19px;
+    font-weight:bold;
+    line-height:1.5;
+    margin:15px 0;
+}
+
+.option{
+    display:block;
+    padding:14px;
+    margin:10px 0;
+    border:1px solid #ddd;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.option:hover{
+    background:#f4f6ff;
+}
+
+.option input{
+    margin-right:10px;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+button{
+    padding:12px 18px;
+    border:0;
+    border-radius:9px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.primary{
+    background:#315efb;
+    color:white;
+}
+
+.secondary{
+    background:#e8ecf3;
+}
+
+.submit{
+    background:#e53935;
+    color:white;
+}
+
+.result{
+    display:none;
+    text-align:center;
+}
+
+.score{
+    font-size:42px;
+    font-weight:bold;
+    margin:15px;
+}
+
+.review{
+    text-align:left;
+    margin-top:20px;
+}
+
+.correct{
+    color:#16803c;
+    font-weight:bold;
+}
+
+.wrong{
+    color:#d22;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>🩺 Nursing X27</h1>
+
+<p><b>UP CNET Biology Mock Test #1</b></p>
+
+<div class="timer">
+⏱️ Time: <span id="timer">30:00</span>
+</div>
+
+<div class="palette" id="palette"></div>
+
+</div>
+
+<div class="card" id="quiz"></div>
+
+<div class="result" id="result">
+
+<h2>🎉 Test Completed!</h2>
+
+<div class="score" id="score"></div>
+
+<p id="stats"></p>
+
+<div class="review" id="review"></div>
+
+<br>
+
+<button class="primary" onclick="location.reload()">
+🔄 Restart Test
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =================================================
+   UP CNET BIOLOGY - 24 QUESTIONS
+================================================= */
+
+const questions = [
+
+{
+q:"कोशिका का 'Powerhouse' किसे कहा जाता है?",
+options:[
+"राइबोसोम",
+"माइटोकॉन्ड्रिया",
+"गॉल्जी तंत्र",
+"लाइसोसोम"
+],
+correct:1
+},
+
+{
+q:"पौधों में प्रकाश संश्लेषण मुख्यतः किस अंगक में होता है?",
+options:[
+"माइटोकॉन्ड्रिया",
+"राइबोसोम",
+"क्लोरोप्लास्ट",
+"नाभिक"
+],
+correct:2
+},
+
+{
+q:"DNA का पूरा नाम क्या है?",
+options:[
+"Deoxyribonucleic Acid",
+"Dinucleic Acid",
+"Deoxygenated Nucleic Acid",
+"Double Nucleic Acid"
+],
+correct:0
+},
+
+{
+q:"मानव हृदय में कितने कक्ष होते हैं?",
+options:[
+"2",
+"3",
+"4",
+"5"
+],
+correct:2
+},
+
+{
+q:"मानव शरीर में रक्त का लाल रंग किसके कारण होता है?",
+options:[
+"प्लाज्मा",
+"हीमोग्लोबिन",
+"प्लेटलेट्स",
+"लिम्फ"
+],
+correct:1
+},
+
+{
+q:"मानव शरीर की सबसे बड़ी ग्रंथि कौन-सी है?",
+options:[
+"अग्न्याशय",
+"थायरॉइड",
+"यकृत",
+"पिट्यूटरी"
+],
+correct:2
+},
+
+{
+q:"मानव शरीर में इंसुलिन किस ग्रंथि/अंग द्वारा स्रावित होता है?",
+options:[
+"यकृत",
+"अग्न्याशय",
+"थायरॉइड",
+"अधिवृक्क"
+],
+correct:1
+},
+
+{
+q:"वृक्क (Kidney) की कार्यात्मक इकाई क्या है?",
+options:[
+"न्यूरॉन",
+"नेफ्रॉन",
+"एल्विओलाई",
+"विल्ली"
+],
+correct:1
+},
+
+{
+q:"मानव फेफड़ों में गैसों का आदान-प्रदान मुख्यतः कहाँ होता है?",
+options:[
+"श्वासनली",
+"ब्रॉन्कस",
+"एल्विओलाई",
+"ग्रसनी"
+],
+correct:2
+},
+
+{
+q:"रक्त का थक्का बनने में मुख्य भूमिका किसकी होती है?",
+options:[
+"लाल रक्त कोशिकाएँ",
+"श्वेत रक्त कोशिकाएँ",
+"प्लेटलेट्स",
+"प्लाज्मा"
+],
+correct:2
+},
+
+{
+q:"मानव शरीर में ऑक्सीजन का परिवहन मुख्यतः किसके द्वारा होता है?",
+options:[
+"हीमोग्लोबिन",
+"प्लाज्मा",
+"प्लेटलेट्स",
+"लिम्फ"
+],
+correct:0
+},
+
+{
+q:"न्यूरॉन किस तंत्र की मूलभूत इकाई है?",
+options:[
+"पाचन तंत्र",
+"तंत्रिका तंत्र",
+"श्वसन तंत्र",
+"उत्सर्जन तंत्र"
+],
+correct:1
+},
+
+{
+q:"पौधों में जल का परिवहन किस ऊतक द्वारा होता है?",
+options:[
+"फ्लोएम",
+"जाइलम",
+"पैरेंकाइमा",
+"कोलेनकाइमा"
+],
+correct:1
+},
+
+{
+q:"पौधों में भोजन का परिवहन किस ऊतक द्वारा होता है?",
+options:[
+"जाइलम",
+"फ्लोएम",
+"स्क्लेरेंकाइमा",
+"एपिडर्मिस"
+],
+correct:1
+},
+
+{
+q:"प्रकाश संश्लेषण के दौरान कौन-सी गैस अवशोषित होती है?",
+options:[
+"ऑक्सीजन",
+"नाइट्रोजन",
+"कार्बन डाइऑक्साइड",
+"हाइड्रोजन"
+],
+correct:2
+},
+
+{
+q:"मानव शरीर में सामान्यतः कितने जोड़े गुणसूत्र होते हैं?",
+options:[
+"22",
+"23",
+"24",
+"46"
+],
+correct:1
+},
+
+{
+q:"मनुष्य में नर का लिंग गुणसूत्र संयोजन क्या होता है?",
+options:[
+"XX",
+"XY",
+"YY",
+"XO"
+],
+correct:1
+},
+
+{
+q:"आनुवंशिकी के जनक किसे कहा जाता है?",
+options:[
+"चार्ल्स डार्विन",
+"ग्रेगर मेंडल",
+"लैमार्क",
+"रॉबर्ट हुक"
+],
+correct:1
+},
+
+{
+q:"विटामिन C की कमी से कौन-सा रोग होता है?",
+options:[
+"रिकेट्स",
+"स्कर्वी",
+"रातांधता",
+"बेरी-बेरी"
+],
+correct:1
+},
+
+{
+q:"विटामिन D की कमी से बच्चों में कौन-सा रोग हो सकता है?",
+options:[
+"स्कर्वी",
+"रिकेट्स",
+"बेरी-बेरी",
+"एनीमिया"
+],
+correct:1
+},
+
+{
+q:"मानव शरीर का सामान्य तापमान लगभग कितना होता है?",
+options:[
+"27°C",
+"32°C",
+"37°C",
+"42°C"
+],
+correct:2
+},
+
+{
+q:"पाचन की प्रक्रिया मुँह में किस एंजाइम से शुरू होती है?",
+options:[
+"पेप्सिन",
+"ट्रिप्सिन",
+"एमाइलेज",
+"लाइपेज"
+],
+correct:2
+},
+
+{
+q:"मानव शरीर में पित्त (Bile) का निर्माण कहाँ होता है?",
+options:[
+"पित्ताशय",
+"यकृत",
+"अग्न्याशय",
+"छोटी आंत"
+],
+correct:1
+},
+
+{
+q:"मनुष्य में श्वसन के लिए मुख्य अंग कौन-सा है?",
+options:[
+"हृदय",
+"फेफड़े",
+"यकृत",
+"वृक्क"
+],
+correct:1
+}
+
+];
+
+
+/* =================================================
+   TEST SYSTEM
+================================================= */
+
+let current=0;
+
+let answers=new Array(questions.length).fill(null);
+
+let time=30*60;
+
+let timerInterval;
+
+
+/* QUESTION PALETTE */
+
+function createPalette(){
+
+let html="";
+
+for(let i=0;i<questions.length;i++){
+
+html+=`
+<button id="p${i}"
+onclick="goToQuestion(${i})">
+${i+1}
+</button>
+`;
+
+}
+
+document.getElementById("palette").innerHTML=html;
+
+updatePalette();
+
+}
+
+
+/* SHOW QUESTION */
+
+function showQuestion(){
+
+let q=questions[current];
+
+let html=`
+
+<div>
+<b>Question ${current+1} / ${questions.length}</b>
+</div>
+
+<div class="question">
+${q.q}
+</div>
+`;
+
+q.options.forEach((option,index)=>{
+
+html+=`
+
+<label class="option">
+
+<input
+type="radio"
+name="answer"
+value="${index}"
+${answers[current]===index?"checked":""}
+onchange="selectAnswer(${index})">
+
+${String.fromCharCode(65+index)}. ${option}
+
+</label>
+
+`;
+
+});
+
+
+html+=`<div class="buttons">`;
+
+if(current>0){
+
+html+=`
+<button class="secondary"
+onclick="previousQuestion()">
+◀ Previous
+</button>
+`;
+
+}
+
+if(current<questions.length-1){
+
+html+=`
+<button class="primary"
+onclick="nextQuestion()">
+Next ▶
+</button>
+`;
+
+}else{
+
+html+=`
+<button class="submit"
+onclick="submitTest()">
+Submit Test
+</button>
+`;
+
+}
+
+html+=`</div>`;
+
+document.getElementById("quiz").innerHTML=html;
+
+updatePalette();
+
+}
+
+
+/* SELECT ANSWER */
+
+function selectAnswer(index){
+
+answers[current]=index;
+
+updatePalette();
+
+}
+
+
+/* PALETTE */
+
+function updatePalette(){
+
+questions.forEach((q,i)=>{
+
+let button=document.getElementById("p"+i);
+
+if(!button)return;
+
+button.classList.remove("active","done");
+
+if(i===current){
+
+button.classList.add("active");
+
+}
+
+if(answers[i]!==null){
+
+button.classList.add("done");
+
+}
+
+});
+
+}
+
+
+/* NEXT */
+
+function nextQuestion(){
+
+if(current<questions.length-1){
+
+current++;
+
+showQuestion();
+
+}
+
+}
+
+
+/* PREVIOUS */
+
+function previousQuestion(){
+
+if(current>0){
+
+current--;
+
+showQuestion();
+
+}
+
+}
+
+
+/* GO TO QUESTION */
+
+function goToQuestion(index){
+
+current=index;
+
+showQuestion();
+
+}
+
+
+/* SUBMIT */
+
+function submitTest(){
+
+clearInterval(timerInterval);
+
+let score=0;
+
+let attempted=0;
+
+let review="";
+
+questions.forEach((q,i)=>{
+
+if(answers[i]!==null){
+
+attempted++;
+
+}
+
+if(answers[i]===q.correct){
+
+score++;
+
+}
+
+review+=`
+
+<p>
+
+<b>Q${i+1}. ${q.q}</b><br>
+
+Your answer:
+
+<span class="${
+answers[i]===q.correct ? "correct":"wrong"
+}">
+
+${
+answers[i]===null
+?"Not Attempted"
+:q.options[answers[i]]
+}
+
+</span>
+
+<br>
+
+Correct answer:
+
+<span class="correct">
+
+${q.options[q.correct]}
+
+</span>
+
+</p>
+
+`;
+
+});
+
+
+let wrong=attempted-score;
+
+let percentage=
+((score/questions.length)*100).toFixed(2);
+
+
+document.getElementById("quiz").style.display="none";
+
+document.getElementById("result").style.display="block";
+
+
+document.getElementById("score").innerHTML=
+score+" / "+questions.length;
+
+
+document.getElementById("stats").innerHTML=
+"Attempted: "+attempted+
+"<br>Correct: "+score+
+"<br>Wrong: "+wrong+
+"<br>Unattempted: "+(questions.length-attempted)+
+"<br>Percentage: "+percentage+"%";
+
+
+document.getElementById("review").innerHTML=
+"<h3>📖 Answer Review</h3>"+review;
+
+}
+
+
+/* TIMER */
+
+function startTimer(){
+
+timerInterval=setInterval(()=>{
+
+time--;
+
+let minutes=Math.floor(time/60);
+
+let seconds=time%60;
+
+document.getElementById("timer").innerHTML=
+
+String(minutes).padStart(2,"0")
++
+":"
++
+String(seconds).padStart(2,"0");
+
+
+if(time<=0){
+
+clearInterval(timerInterval);
+
+submitTest();
+
+}
+
+},1000);
+
+}
+
+
+/* START */
+
+createPalette();
+
+showQuestion();
+
+startTimer();
+
+</script>
+
+</body>
+</html>
